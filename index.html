@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SA Banking Landscape</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --red: #dd1f26;
+    --blue: #21418d;
+    --light-blue: #eef1f8;
+    --grey: #f5f5f5;
+    --dark: #1a1a1a;
+    --border: #e0e0e0;
+  }
+
+  body {
+    font-family: 'Proxima Nova', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #fafafa;
+    color: var(--dark);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+
+  .container {
+    max-width: 840px;
+    margin: 0 auto;
+    padding: 16px 12px 40px;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    padding: 24px 0 20px;
+  }
+  .header h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--blue);
+    letter-spacing: -0.02em;
+  }
+  .header p {
+    font-size: 0.85rem;
+    color: #888;
+    margin-top: 6px;
+  }
+
+  /* Search */
+  .search-wrap {
+    position: relative;
+    margin: 16px 0 14px;
+  }
+  .search-wrap input {
+    width: 100%;
+    padding: 12px 14px 12px 42px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    background: #fff;
+    outline: none;
+    transition: border-color 0.2s;
+    -webkit-appearance: none;
+  }
+  .search-wrap input:focus { border-color: var(--blue); }
+  .search-wrap .icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    color: #aaa;
+  }
+  .search-wrap input::placeholder { color: #bbb; }
+
+  /* Filter tabs */
+  .tabs {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+
+  .tab {
+    flex: 0 0 auto;
+    padding: 8px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 20px;
+    background: #fff;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #555;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.18s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .tab.active {
+    background: var(--blue);
+    color: #fff;
+    border-color: var(--blue);
+  }
+  .tab:not(.active):active { background: var(--light-blue); }
+
+  /* Section headers */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 22px 0 10px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--blue);
+  }
+  .section-header .badge {
+    width: 8px;
+    height: 28px;
+    border-radius: 3px;
+    flex: 0 0 auto;
+  }
+  .section-header h2 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--blue);
+    letter-spacing: -0.01em;
+  }
+
+  /* Bank cards */
+  .bank-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 8px;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+  .bank-card:active { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+
+  .bank-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .bank-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--dark);
+    flex: 1;
+    padding-right: 12px;
+  }
+
+  .bank-mcap {
+    flex: 0 0 auto;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--red);
+    background: #fdf0f1;
+    padding: 4px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+
+  .expand-btn {
+    flex: 0 0 auto;
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: var(--light-blue);
+    border-radius: 50%;
+    color: var(--blue);
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 10px;
+    transition: transform 0.25s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .expand-btn.open { transform: rotate(45deg); }
+
+  .bank-desc {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    padding: 0 16px;
+  }
+  .bank-desc-inner {
+    padding: 0 0 16px;
+    font-size: 0.88rem;
+    color: #444;
+    line-height: 1.55;
+    border-top: 1px solid var(--border);
+    padding-top: 12px;
+  }
+
+  /* No results */
+  .no-results {
+    text-align: center;
+    padding: 40px 20px;
+    color: #999;
+    font-size: 0.9rem;
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    margin-top: 30px;
+    font-size: 0.75rem;
+    color: #bbb;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>SA Banking Landscape</h1>
+    <p>Tap any bank to expand details</p>
+  </div>
+
+  <div class="search-wrap">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" id="search" placeholder="Search banks…" autocomplete="off">
+  </div>
+
+  <div class="tabs" id="tabs">
+    <div class="tab active" data-cat="all">All</div>
+    <div class="tab" data-cat="listed">The Listed Players</div>
+    <div class="tab" data-cat="new">New Kids on the Block</div>
+    <div class="tab" data-cat="wildcard">Wildcards</div>
+    <div class="tab" data-cat="up">Up Against It</div>
+  </div>
+
+  <div id="content"></div>
+
+  <div class="footer">SA Banking Landscape · Compiled September 2026</div>
+</div>
+
+<script>
+const banks = [
+  { cat: "listed", catLabel: "The Listed Players", name: "FirstRand", mcap: "R528 billion", desc: "SA's largest banking group whose brands include FNB, RMB, WesBank and Ashburton Investments. FNB alone has an active customer base of 12.77m, of which 10.27m are in SA." },
+  { cat: "listed", catLabel: "The Listed Players", name: "Capitec", mcap: "R522 billion", desc: "SA's largest retail bank with more than 26 million customers, though that includes point of sales devices." },
+  { cat: "listed", catLabel: "The Listed Players", name: "Standard Bank", mcap: "R508 billion", desc: "Africa's biggest bank by assets, its operations span 21 markets on the continent serving more than 20 million customers." },
+  { cat: "listed", catLabel: "The Listed Players", name: "ABSA", mcap: "R197.5 billion", desc: "Now dubbed a Pan African lender active in 12 markets on the continent (if you include rep offices in Namibia and Nigeria), Absa has 13.4 million customers of which about 10 million are in SA." },
+  { cat: "listed", catLabel: "The Listed Players", name: "Nedbank", mcap: "R141 billion", desc: "With more than 8 million clients across the group, Nedbank is making a push into East Africa after buying Kenya's NCBA group and is also looking to bank more entrepreneurs and merchants in the local economy with its buyout of fintech iKhokha." },
+  { cat: "listed", catLabel: "The Listed Players", name: "Investec", mcap: "R127.6 billion", desc: "The private bank and wealth manager's international private client ecosystem comprises 127,467 SA Private Bank clients; 27,220 Wealth & Investment International annuity clients; and 8,188 UK Private Bank clients, with 56% of the SA Private Bank base also holding a Wealth & Investment International relationship." },
+  { cat: "new", catLabel: "New Kids on the Block", name: "GoTyme", mcap: null, desc: "The Patrice Motsepe-backed neobank, whose operations span SA, the Philippines and Indonesia, has nearly 25 million customers. GoTyme Bank SA currently has just over 13 million customers, with an active customer rate of approximately 67%." },
+  { cat: "new", catLabel: "New Kids on the Block", name: "Discovery Bank", mcap: null, desc: "CEO Hylton Kallner assures us his ambition to build a \u201csuper bank\u201d goes beyond cross-selling Discovery products to the lender's 1.6 million customers." },
+  { cat: "new", catLabel: "New Kids on the Block", name: "OM Bank", mcap: null, desc: "Old Mutual's fledgling lender is closing in on 1m customers and has the advantage of being able to cross-sell into its parent's more than 7 million customers in SA alone." },
+  { cat: "new", catLabel: "New Kids on the Block", name: "Bank Zero", mcap: null, desc: "Now part of Lesaka Technologies the lender is forging alliances with fintechs and has ambitions to add foreign exchange, lending and cross-border payments to its repertoire." },
+  { cat: "wildcard", catLabel: "Wildcards", name: "PEP Bank", mcap: null, desc: "Dubbed PlusB by its parent Pepkor it has a distribution footprint spanning more than 7 000 retail stores and has snared highly rated outgoing OUTsurance CFO Jan Hofmeyr who will form part of its executive team." },
+  { cat: "wildcard", catLabel: "Wildcards", name: "Revolut", mcap: null, desc: "The digital first UK-headquartered lender has applied for a banking license in SA and aims to launch locally in 2028." },
+  { cat: "up", catLabel: "Up Against It", name: "African Bank", mcap: null, desc: "Still essentially government-owned through the SA Reserve Bank (SARB) and the Public Investment Corporation (PIC), African Bank has had a hard time integrating Grindrod, Ubank and parts of Sasfin into its operations. It's also suffered executive churn with former CEO Kennedy Bungane and CFO Anban Chetti leaving." },
+  { cat: "up", catLabel: "Up Against It", name: "Access Bank", mcap: null, desc: "A small player in SA it abandoned its R2.8bn deal to buy Bidvest Bank earlier this year." },
+  { cat: "up", catLabel: "Up Against It", name: "Sasfin", mcap: null, desc: "Sasfin voluntarily relinquished its banking licence earlier this year and exited banking after it got caught up in a fraud scandal linked to an international gold smuggling ring. It subsequently rebranded its wealth unit to Otto1890." },
+  { cat: "up", catLabel: "Up Against It", name: "Bidvest Bank", mcap: null, desc: "Bidvest Bank has been designated a discontinued operation by its parent, which is looking to sell the unit which provides business banking, personal banking, forex, and fleet finance services." },
+  { cat: "up", catLabel: "Up Against It", name: "Postbank", mcap: null, desc: "The state-owned lender is now separated from the Post Office and is essentially a distributor of SA Social Security Agency (SASSA) grants." },
+];
+
+const catColours = {
+  listed: "#21418d",
+  new: "#dd1f26",
+  wildcard: "#2a8c3a",
+  up: "#7a5c9e",
+};
+
+const catOrder = ["listed", "new", "wildcard", "up"];
+
+let activeCat = "all";
+let searchTerm = "";
+
+const content = document.getElementById("content");
+
+function render() {
+  const filtered = banks.filter(b => {
+    const catMatch = activeCat === "all" || b.cat === activeCat;
+    const searchMatch = !searchTerm ||
+      b.name.toLowerCase().includes(searchTerm) ||
+      b.desc.toLowerCase().includes(searchTerm) ||
+      b.catLabel.toLowerCase().includes(searchTerm);
+    return catMatch && searchMatch;
+  });
+
+  if (filtered.length === 0) {
+    content.innerHTML = '<div class="no-results">No banks match your search.</div>';
+    return;
+  }
+
+  let html = "";
+  let prevCat = "";
+
+  filtered.forEach((b, i) => {
+    if (b.cat !== prevCat) {
+      if (prevCat !== "") html += "</div>";
+      html += '<div class="section-header">' +
+        '<div class="badge" style="background:' + catColours[b.cat] + '"></div>' +
+        '<h2>' + b.catLabel + '</h2></div>';
+      prevCat = b.cat;
+    }
+
+    const mcapHtml = b.mcap
+      ? '<span class="bank-mcap">' + b.mcap + '</span>'
+      : '';
+
+    html += '<div class="bank-card" data-idx="' + i + '">' +
+      '<div class="bank-header" onclick="toggle(this)">' +
+        '<div class="bank-name">' + b.name + '</div>' +
+        mcapHtml +
+        '<button class="expand-btn" aria-label="Expand">+</button>' +
+      '</div>' +
+      '<div class="bank-desc"><div class="bank-desc-inner">' + b.desc + '</div></div>' +
+    '</div>';
+  });
+
+  content.innerHTML = html;
+}
+
+function toggle(headerEl) {
+  const card = headerEl.parentElement;
+  const desc = card.querySelector(".bank-desc");
+  const btn = headerEl.querySelector(".expand-btn");
+  if (desc.style.maxHeight && desc.style.maxHeight !== "0px") {
+    desc.style.maxHeight = "0px";
+    btn.classList.remove("open");
+  } else {
+    desc.style.maxHeight = desc.scrollHeight + "px";
+    btn.classList.add("open");
+  }
+}
+
+// Tab clicks
+document.querySelectorAll(".tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+    activeCat = tab.dataset.cat;
+    render();
+  });
+});
+
+// Search
+document.getElementById("search").addEventListener("input", (e) => {
+  searchTerm = e.target.value.toLowerCase().trim();
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
